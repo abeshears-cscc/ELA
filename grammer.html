@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Composition Skills Lab</title>
+
+<style>
+
+:root{
+    --green:#00B140;
+    --navy:#002E5D;
+    --light:#f5f7fa;
+    --success:#28a745;
+    --error:#dc3545;
+}
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Segoe UI, Arial, sans-serif;
+    background:var(--light);
+}
+
+header{
+    background:var(--navy);
+    color:white;
+    text-align:center;
+    padding:20px;
+}
+
+.container{
+    max-width:1200px;
+    margin:auto;
+    padding:20px;
+}
+
+.tabs{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:20px;
+}
+
+.tab{
+    border:none;
+    padding:12px 20px;
+    border-radius:8px;
+    background:#ddd;
+    cursor:pointer;
+    font-size:16px;
+}
+
+.tab.active{
+    background:var(--green);
+    color:white;
+}
+
+.panel{
+    background:white;
+    border-radius:12px;
+    padding:20px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+.hidden{
+    display:none;
+}
+
+.score{
+    font-weight:bold;
+    margin-bottom:15px;
+}
+
+.sentence{
+    font-size:1.5rem;
+    line-height:1.6;
+    margin:25px 0;
+}
+
+.buttons{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+.action{
+    background:var(--green);
+    color:white;
+    border:none;
+    padding:12px 20px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.feedback{
+    display:none;
+    margin-top:20px;
+    padding:15px;
+    border-radius:10px;
+}
+
+.correct{
+    background:#dff5df;
+    border-left:6px solid var(--success);
+}
+
+.incorrect{
+    background:#ffe4e4;
+    border-left:6px solid var(--error);
+}
+
+.next-btn{
+    margin-top:20px;
+}
+
+textarea{
+    width:100%;
+    min-height:220px;
+    padding:12px;
+    font-size:16px;
+    border-radius:8px;
+    border:1px solid #ccc;
+}
+
+.instructions{
+    background:#eef3f9;
+    padding:12px;
+    border-radius:8px;
+    margin-bottom:15px;
+}
+
+</style>
+</head>
+<body>
+
+<header>
+<h1>Composition Skills Lab</h1>
+<p>Community College Writing Support Activities</p>
+</header>
+
+<div class="container">
+
+<div class="tabs">
+
+<button class="tab active"
+        onclick="showTab('fragment')">
+Fragment Detective
+</button>
+
+<button class="tab"
+        onclick="showTab('runon')">
+Run-On Repair Shop
+</button>
+
+<button class="tab"
+        onclick="showTab('editor')">
+Editor Challenge
+</button>
+
+</div>
+
+<!-- ===================================== -->
+<!-- FRAGMENT DETECTIVE -->
+<!-- ===================================== -->
+
+<div id="fragmentTab" class="panel">
+
+<div class="score">
+Score:
+<span id="fragmentScore">0</span> /
+<span id="fragmentTotal">0</span>
+</div>
+
+<h2>Fragment Detective</h2>
+
+<div class="instructions">
+Determine whether the example is a complete sentence or a fragment.
+</div>
+
+<div id="fragmentSentence"
+     class="sentence">
+</div>
+
+<div class="buttons">
+
+<button class="action"
+        onclick="checkFragment(true)">
+Fragment
+</button>
+
+<button class="action"
+        onclick="checkFragment(false)">
+Complete Sentence
+</button>
+
+</div>
+
+<div id="fragmentFeedback"
+     class="feedback">
+</div>
+
+<button class="action next-btn"
+        onclick="nextFragment()">
+Next Sentence
+</button>
+
+</div>
+
+<!-- ===================================== -->
+<!-- RUN ON REPAIR SHOP -->
+<!-- ===================================== -->
+
+<div id="runonTab"
+     class="panel hidden">
+
+<div class="score">
+Score:
+<span id="runonScore">0</span> /
+<span id="runonTotal">0</span>
+</div>
+
+<h2>Run-On Repair Shop</h2>
+
+<div class="instructions">
+Rewrite the sentence so that it no longer contains a run-on.
+A period, semicolon, or coordinating conjunction may work.
+</div>
+
+<div id="runonSentence"
+     class="sentence">
+</div>
+
+<textarea id="runonAnswer"
+          placeholder="Type your corrected sentence here..."></textarea>
+
+<br><br>
+
+<button class="action"
+        onclick="checkRunOn()">
+Check Repair
+</button>
+
+<div id="runonFeedback"
+     class="feedback">
+</div>
+
+<button class="action next-btn"
+        onclick="nextRunOn()">
+Next Sentence
+</button>
+
+</div>
+
+<!-- ===================================== -->
+<!-- EDITOR CHALLENGE -->
+<!-- ===================================== -->
+
+<div id="editorTab"
+     class="panel hidden">
+
+<div class="score">
+Editor Score:
+<span id="editorScore">0</span> /
+<span id="editorTotal">0</span>
+</div>
+
+<h2>Editor Challenge</h2>
+
+<div class="instructions">
+Edit the paragraph below. Fix sentence fragments,
+run-ons, and punctuation errors.
+</div>
+
+<div id="editorPrompt"
+     class="sentence"
+     style="font-size:1.2rem;">
+</div>
+
+<textarea id="editorAnswer"
+          placeholder="Rewrite the paragraph here..."></textarea>
+
+<br><br>
+
+<button class="action"
+        onclick="checkEditor()">
+Check My Revision
+</button>
+
+<div id="editorFeedback"
+     class="feedback">
+</div>
+
+<button class="action next-btn"
+        onclick="nextEditor()">
+Next Paragraph
+</button>
+
+</div>
+
+</div>
+
+<script>
+
+/* =========================
+   TAB MANAGEMENT
+========================= */
+
+function showTab(tab){
+
+    document
+        .querySelectorAll('.tab')
+        .forEach(t=>t.classList.remove('active'));
+
+    document
+        .getElementById('fragmentTab')
+        .classList.add('hidden');
+
+    document
+        .getElementById('runonTab')
+        .classList.add('hidden');
+
+    document
+        .getElementById('editorTab')
+        .classList.add('hidden');
+
+    if(tab === 'fragment'){
+
+        document.querySelectorAll('.tab')[0]
+            .classList.add('active');
+
+        fragmentTab.classList.remove('hidden');
+    }
+
+    else if(tab === 'runon'){
+
+        document.querySelectorAll('.tab')[1]
+            .classList.add('active');
+
+        runonTab.classList.remove('hidden');
+    }
+
+    else{
+
+        document.querySelectorAll('.tab')[2]
+            .classList.add('active');
+
+        editorTab.classList.remove('hidden');
+    }
+}
+
+/* =========================
+   FRAGMENT DETECTIVE
+========================= */
+
+let fragmentScore = 0;
+let fragmentTotal = 0;
+let fragmentIndex = 0;
+
+const fragmentQuestions = [
+
+{
+text:"Because the professor assigned a research paper.",
+fragment:true,
+explanation:"'Because' creates a dependent clause that leaves the reader expecting more information."
+},
+
+{
+text:"The students submitted their essays before the deadline.",
+fragment:false,
+explanation:"This sentence contains a subject, a verb, and a complete thought."
+},
+
+{
+text:"Walking across campus in the rain.",
+fragment:true,
+explanation:"This phrase does not contain a complete independent clause."
+},
+
+{
+text:"Although many students use social media, they still communicate face to face.",
+fragment:false,
+explanation:"The dependent clause is completed by an independent clause."
+},
+
+{
+text:"While reviewing the research article.",
+fragment:true,
+explanation:"This dependent clause does not express a complete thought."
+},
+
+{
+text:"The composition class met every Tuesday and Thursday.",
+fragment:false,
+explanation:"This is a complete sentence."
+}
+
+];
+
+function loadFragment(){
+
+    fragmentSentence.textContent =
+        fragmentQuestions[fragmentIndex].text;
+
+    fragmentFeedback.style.display="none";
+}
+
+function checkFragment(answer){
+
+    fragmentTotal++;
+
+    const q =
+        fragmentQuestions[fragmentIndex];
+
+    if(answer === q.fragment){
+
+        fragmentScore++;
+
+        fragmentFeedback.className =
+            "feedback correct";
+
+        fragmentFeedback.innerHTML =
+            "<strong>Correct!</strong><br><br>" +
+            q.explanation;
+    }
+
+    else{
+
+        fragmentFeedback.className =
+            "feedback incorrect";
+
+        fragmentFeedback.innerHTML =
+            "<strong>Not Quite.</strong><br><br>" +
+            q.explanation;
+    }
+
+    fragmentFeedback.style.display="block";
+
+    fragmentScoreEl();
+}
+
+function fragmentScoreEl(){
+
+    fragmentScore.textContent="";
+    document.getElementById("fragmentScore")
+        .textContent = fragmentScore;
+
+    document.getElementById("fragmentTotal")
+        .textContent = fragmentTotal;
+}
+
+function nextFragment(){
+
+    fragmentIndex++;
+
+    if(fragmentIndex >= fragmentQuestions.length){
+        fragmentIndex = 0;
+    }
+
+    loadFragment();
+}
+
+/* =========================
+   RUN ON REPAIR SHOP
+========================= */
+
+let runonIndex = 0;
+let runonScore = 0;
+let runonTotal = 0;
+
+const runonQuestions = [
+
+{
+sentence:"The class ended the students went home.",
+answers:[
+"The class ended. The students went home.",
+"The class ended; the students went home.",
+"The class ended, and the students went home."
+]
+},
+
+{
+sentence:"Students often procrastinate they then become stressed.",
+answers:[
+"Students often procrastinate. They then become stressed.",
+"Students often procrastinate; they then become stressed.",
+"Students often procrastinate, and they then become stressed."
+]
+},
+
+{
+sentence:"Many students work full time they also attend college.",
+answers:[
+"Many students work full time. They also attend college.",
+"Many students work full time; they also attend college.",
+"Many students work full time, and they also attend college."
+]
+},
+
+{
+sentence:"The assignment was difficult the students completed it successfully.",
+answers:[
+"The assignment was difficult. The students completed it successfully.",
+"The assignment was difficult; the students completed it successfully.",
+"The assignment was difficult, but the students completed it successfully."
+]
+}
+
+];
+
+function normalize(text){
+
+    return text
+        .toLowerCase()
+        .replace(/\s+/g," ")
+        .trim();
+}
+
+function loadRunOn(){
+
+    runonSentence.textContent =
+        runonQuestions[runonIndex].sentence;
+
+    runonAnswer.value = "";
+
+    runonFeedback.style.display = "none";
+}
+
+function checkRunOn(){
+
+    runonTotal++;
+
+    const student =
+        normalize(runonAnswer.value);
+
+    const answers =
+        runonQuestions[runonIndex].answers;
+
+    let correct = false;
+
+    answers.forEach(a=>{
+
+        if(normalize(a) === student){
+            correct = true;
+        }
+
+    });
+
+    if(correct){
+
+        runonScore++;
+
+        runonFeedback.className =
+            "feedback correct";
+
+        runonFeedback.innerHTML =
+            "<strong>Excellent repair!</strong>";
+    }
+
+    else{
+
+        runonFeedback.className =
+            "feedback incorrect";
+
+        runonFeedback.innerHTML =
+            "<strong>Possible Correct Repairs:</strong><ul>"
+            +
+            answers.map(a=>`<li>${a}</li>`).join("")
+            +
+            "</ul>";
+    }
+
+    runonFeedback.style.display="block";
+
+    document.getElementById("runonScore")
+        .textContent = runonScore;
+
+    document.getElementById("runonTotal")
+        .textContent = runonTotal;
+}
+
+function nextRunOn(){
+
+    runonIndex++;
+
+    if(runonIndex >= runonQuestions.length){
+        runonIndex = 0;
+    }
+
+    loadRunOn();
+}
+
+/* =========================
+   EDITOR CHALLENGE
+========================= */
+
+let editorIndex = 0;
+let editorScoreValue = 0;
+let editorTotalValue = 0;
+
+const editorQuestions = [
+
+{
+prompt:
+"Community college students often balance many responsibilities they attend classes work jobs and care for family members. Because their schedules are busy. Time management becomes an important skill. Many students develop effective routines they achieve academic success."
+},
+
+{
+prompt:
+"Many students experience anxiety before exams. While preparing for major tests. Creating a study schedule can reduce stress students often perform better when they prepare over time."
+},
+
+{
+prompt:
+"Technology has changed education significantly online learning provides flexibility. Because students can complete coursework from many locations. Colleges have expanded their online offerings."
+},
+
+{
+prompt:
+"Writing is a skill that improves with practice many students become stronger writers over time. Although revision can be challenging. It is one of the most important parts of the writing process."
+}
+
+];
+
+function loadEditor(){
+
+    editorPrompt.textContent =
+        editorQuestions[editorIndex].prompt;
+
+    editorAnswer.value = "";
+
+    editorFeedback.style.display = "none";
+}
+
+function checkEditor(){
+
+    editorTotalValue++;
+
+    const answer =
+        editorAnswer.value;
+
+    let score = 0;
+
+    const sentenceCount =
+        answer
+        .split(/[.!?]+/)
+        .filter(s=>s.trim().length > 0)
+        .length;
+
+    if(sentenceCount >= 3){
+        score++;
+    }
+
+    if(answer.includes(",")){
+        score++;
+    }
+
+    if(answer.includes(".")){
+        score++;
+    }
+
+    const percent =
+        Math.round(score / 3 * 100);
+
+    if(percent >= 67){
+
+        editorScoreValue++;
+
+        editorFeedback.className =
+            "feedback correct";
+
+        editorFeedback.innerHTML =
+            "<strong>Nice Revision!</strong><br><br>" +
+            "Your revision appears to correct most sentence-boundary issues.<br><br>" +
+            "Score: " + percent + "%";
+    }
+
+    else{
+
+        editorFeedback.className =
+            "feedback incorrect";
+
+        editorFeedback.innerHTML =
+            "<strong>Needs More Revision</strong><br><br>" +
+            "Look for sentence fragments, missing punctuation, and run-on sentences.<br><br>" +
+            "Score: " + percent + "%";
+    }
+
+    editorFeedback.style.display = "block";
+
+    document.getElementById("editorScore")
+        .textContent = editorScoreValue;
+
+    document.getElementById("editorTotal")
+        .textContent = editorTotalValue;
+}
+
+function nextEditor(){
+
+    editorIndex++;
+
+    if(editorIndex >= editorQuestions.length){
+        editorIndex = 0;
+    }
+
+    loadEditor();
+}
+
+/* =========================
+   INITIALIZE
+========================= */
+
+loadFragment();
+loadRunOn();
+loadEditor();
+
+</script>
+
+</body>
+</html>

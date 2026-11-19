@@ -101,11 +101,54 @@ header{
     margin-top:20px;
     padding:15px;
     border-radius:10px;
+    position:relative;
+    overflow:hidden;
 }
 
 .correct{
     background:#dff5df;
     border-left:6px solid var(--success);
+}
+
+.feedback.correct.celebrating{
+    animation:successPop .55s ease-out;
+}
+
+@keyframes successPop{
+    0%{ transform:scale(1); }
+    45%{ transform:scale(1.025); box-shadow:0 0 18px rgba(40,167,69,.35); }
+    100%{ transform:scale(1); }
+}
+
+.confetti{
+    position:fixed;
+    width:8px;
+    height:12px;
+    border-radius:2px;
+    pointer-events:none;
+    z-index:9999;
+    animation:confettiFall 1.8s linear forwards;
+}
+
+@keyframes confettiFall{
+    0%{
+        transform:translate(0,0) rotate(0deg);
+        opacity:1;
+    }
+    100%{
+        transform:translate(var(--confetti-x), var(--confetti-y)) rotate(var(--confetti-spin));
+        opacity:0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce){
+    .feedback.correct.celebrating{
+        animation:none;
+    }
+
+    .confetti{
+        display:none;
+    }
 }
 
 .incorrect{
@@ -309,6 +352,53 @@ Next Paragraph
    TAB MANAGEMENT
 ========================= */
 
+const successColors =
+    ["#00B140","#002E5D","#FFD166","#EF476F","#7B61FF","#20C997"];
+
+function celebrateSuccess(feedback){
+
+    feedback.classList.remove("celebrating");
+    void feedback.offsetWidth;
+    feedback.classList.add("celebrating");
+
+    window.setTimeout(()=>{
+        feedback.classList.remove("celebrating");
+    }, 600);
+
+    if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+        return;
+    }
+
+    for(let i = 0; i < 80; i++){
+
+        const piece = document.createElement("span");
+        piece.className = "confetti";
+        piece.style.left =
+            (Math.random() * window.innerWidth) + "px";
+        piece.style.top = "-16px";
+        piece.style.background =
+            successColors[i % successColors.length];
+        piece.style.setProperty(
+            "--confetti-x",
+            (Math.random() * 200 - 100) + "px"
+        );
+        piece.style.setProperty(
+            "--confetti-y",
+            (window.innerHeight + Math.random() * 100) + "px"
+        );
+        piece.style.setProperty(
+            "--confetti-spin",
+            (Math.random() * 720 - 360) + "deg"
+        );
+        piece.style.animationDelay =
+            (Math.random() * 900) + "ms";
+
+        document.body.appendChild(piece);
+        piece.addEventListener("animationend",
+            ()=>piece.remove());
+    }
+}
+
 function showTab(tab){
 
     document
@@ -425,6 +515,8 @@ function checkFragment(answer){
         fragmentFeedback.innerHTML =
             "<strong>Correct!</strong><br><br>" +
             q.explanation;
+
+        celebrateSuccess(fragmentFeedback);
     }
 
     else{
@@ -558,6 +650,8 @@ function checkRunOn(){
 
         runonFeedback.innerHTML =
             "<strong>Excellent repair!</strong>";
+
+        celebrateSuccess(runonFeedback);
     }
 
     else{
@@ -676,6 +770,8 @@ function checkEditor(){
             "<strong>Nice Revision!</strong><br><br>" +
             "Your revision appears to correct most sentence-boundary issues.<br><br>" +
             "Score: " + percent + "%";
+
+        celebrateSuccess(editorFeedback);
     }
 
     else{
